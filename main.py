@@ -17,9 +17,14 @@ import webapp2
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
+    	first_word = self.request.get('first_word')
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Hello, World!')
+        self.response.write('Hello, World!\nYour first word is \"' + first_word + '\"')
 
+    def post(self):
+    	first_word = self.request.get('first_word')
+    	query_params = {'first_word' : first_word}
+    	self.redirect('/?' + urllib.urlencode(query_params))
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),

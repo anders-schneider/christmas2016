@@ -13,24 +13,26 @@ def record(current, next, pairmap):
 	else:
 		pairmap[key] = 1
 
-# The client must be created with admin=True because it will create a
-# table.
-client = bigtable.Client(project=project_id, admin=True)
-instance = client.instance(instance_id)
+# # The client must be created with admin=True because it will create a
+# # table.
+# client = bigtable.Client(project=project_id, admin=True)
+# instance = client.instance(instance_id)
 
-print('Creating the {} table.'.format(table_id))
-table = instance.table(table_id)
-table.create()
-column_family_id = 'col_family'
-column_id = 'counts'
-counts_col = table.column_family(column_family_id)
-counts_col.create()
+# print('Creating the {} table.'.format(table_id))
+# table = instance.table(table_id)
+# table.delete()
+# table.create()
+# column_family_id = 'col_family'
+# column_id = 'counts'
+# counts_col = table.column_family(column_family_id)
+# counts_col.create()
 
 with open(filename) as f:
 	lines = f.readlines()
 
 pairmap = dict()
 prev = ''
+
 for line in lines:
 	for unit in line.split(' '):
 		unit = unit.strip().lower()
@@ -50,7 +52,8 @@ for line in lines:
 			else:
 				prev = unit
 
-for key, value in pairmap.iteritems():
-	row = table.row(key)
-	row.set_cell(column_family_id, column_id, value.encode('utf-8'))
-	row.commit()
+for key, value in sorted(pairmap.iteritems()):
+	print "Wrote:", key, "-->", value
+	# row = table.row(key)
+	# row.set_cell(column_family_id, column_id, value)
+	# row.commit()
